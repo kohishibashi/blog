@@ -2,15 +2,13 @@
 
 {% block content %}
 
-{% for post in post_list %}
 <div class="card mb-3">
   <h2 class="card-header bg-dark text-white">{{ post.title }}</h2>
   <div class="card-body">
     <p>{{ post.create_at }},{{ post.Category }}</p>
-    <a href="{% url 'blog:detail' post.pk %}" class="btn btn-dark">続き</a>
+    <p>{{ post.text | linebreaksbr }}</p>
   </div>
 </div>
 
-{% endfor %}
 
 {% endblock %}

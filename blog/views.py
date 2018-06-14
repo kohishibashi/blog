@@ -19,6 +19,10 @@ class IndexView(generic.ListView):
             )
         return queryset
 
+class DetailView(generic.DetailView):
+    model = Post
+    
+
 # 画像アップロード用
 class UploadView(generic.FormView):
     template_name = 'blog/upload.html'

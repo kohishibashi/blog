@@ -1,4 +1,5 @@
 from django.views import generic
+from django.db.models import Q
 from .models import Post
 from .forms import ImageUploadForm
 from PIL import Image
@@ -8,7 +9,15 @@ class IndexView(generic.ListView):
     model = Post
 
     def get_queryset(self):
-        return Post.objects.order_by('-create_at')
+        queryset = Post.objects.order_by('-create_at')
+        # base.html inputのnameにkeyword これを取得
+        keyword = self.request.GET.get('keyword')
+        #検索入力されてたなら filterはtitleだと全文一致
+        if keyword:
+            queryset = queryset.filter(
+            Q(title__icontains=keyword)|Q(text__icontains=keyword)
+            )
+        return queryset
 
 # 画像アップロード用
 class UploadView(generic.FormView):

@@ -6,9 +6,16 @@
   <h2 class="card-header bg-dark text-white">{{ post.title }}</h2>
   <div class="card-body">
     <p>{{ post.create_at }},{{ post.Category }}</p>
-    <p>{{ post.text | linebreaksbr }}</p>
+    <p>{{ post.text | linebreaksbr |urlize }}</p>
   </div>
 </div>
 
+{% for comment in post.comment_set.all %}
+  <div class="card mb-3">
+    <h5 class="card-header">{{ comment.name }}</h5>
+    <div class="card-body">{{ comment.text | linebreaksbr }}</div>
+  </div>
+{% endfor %}
 
+<a class="mb-3 btn btn-dark" href="{% url 'blog:comment' post.pk %}">コメント投稿ページ</a>
 {% endblock %}

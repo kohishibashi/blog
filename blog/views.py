@@ -1,9 +1,9 @@
 from django.views import generic
 from django.db.models import Q
-from .models import Post
-from .forms import ImageUploadForm
+from .models import Post,Category,Comment
+from .forms import ImageUploadForm,CommentCreateForm
 from PIL import Image
-from django.shortcuts import render
+from django.shortcuts import render,get_object_or_404,redirect
 
 class IndexView(generic.ListView):
     model = Post
@@ -21,7 +21,7 @@ class IndexView(generic.ListView):
 
 class DetailView(generic.DetailView):
     model = Post
-    
+
 
 # 画像アップロード用
 class UploadView(generic.FormView):
@@ -39,3 +39,15 @@ class UploadView(generic.FormView):
             'result': "テスト",
         }
         return render(self.request, 'blog/result.html', context)
+
+class CommentView(generic.CreateView):
+    model = Comment
+    #fields = ('name', 'text')
+    form_class = CommentCreateForm
+
+    def form_valid(self, form):
+        post_pk = self.kwargs['post_pk']
+        comment = form.save(commit=False)  # コメントはDBに保存されていません
+        comment.post = get_object_or_404(Post, pk=post_pk)
+        comment.save()  # ここでDBに保存
+        return redirect('blog:detail', pk=post_pk)
